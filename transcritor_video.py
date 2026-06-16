@@ -69,6 +69,20 @@ MODELOS = {
     "Large – máxima precisão":           "large",
 }
 
+IDIOMAS = {
+    "Portugues":            "pt",
+    "English":              "en",
+    "Espanol":              "es",
+    "Francais":             "fr",
+    "Deutsch":              "de",
+    "Italiano":             "it",
+    "Japanese":             "ja",
+    "Chinese":              "zh",
+    "Russian":              "ru",
+    "Arabic":               "ar",
+    "Auto-detect":          None,
+}
+
 FORMATOS_VIDEO = [
     ("Vídeos", "*.mp4 *.mkv *.avi *.mov *.wmv *.flv *.webm *.m4v *.mpeg *.mpg"),
     ("Áudios", "*.mp3 *.wav *.ogg *.flac *.aac *.m4a"),
@@ -84,6 +98,7 @@ class TranscriptorApp:
         self.root = root
         self.video_path = tk.StringVar()
         self.modelo_key = tk.StringVar(value=list(MODELOS.keys())[1])
+        self.idioma_key = tk.StringVar(value="Portugues")
         self.status_var = tk.StringVar(value="Pronto para transcrever")
         self.progress_var = tk.DoubleVar(value=0)
         self.is_running = False
@@ -221,13 +236,29 @@ class TranscriptorApp:
         )
         self.combo.grid(row=0, column=1, sticky="w")
 
+        # Idioma
+        tk.Label(inner, text="Idioma do audio:",
+                 font=("Helvetica", 10),
+                 bg=COLORS["card"], fg=COLORS["muted"]
+                 ).grid(row=1, column=0, sticky="w", padx=(0, 12), pady=(8, 4))
+
+        self.combo_idioma = ttk.Combobox(
+            inner,
+            textvariable=self.idioma_key,
+            values=list(IDIOMAS.keys()),
+            state="readonly",
+            style="Dark.TCombobox",
+            width=38,
+        )
+        self.combo_idioma.grid(row=1, column=1, sticky="w")
+
         # Dica
         tk.Label(
             inner,
-            text="💡  'Base' é ideal para a maioria dos casos. 'Large' é mais lento mas muito mais preciso.",
+            text="Dica: 'Base' atende bem a maioria dos casos. 'Large' e mais lento mas muito mais preciso.",
             font=("Helvetica", 9),
             bg=COLORS["card"], fg=COLORS["muted"], wraplength=600, justify="left"
-        ).grid(row=1, column=0, columnspan=2, sticky="w", pady=(6, 0))
+        ).grid(row=2, column=0, columnspan=2, sticky="w", pady=(6, 0))
 
     def _btn_transcrever(self, parent):
         frame = tk.Frame(parent, bg=COLORS["bg"])
@@ -346,7 +377,7 @@ class TranscriptorApp:
         footer.pack(fill="x", padx=32, pady=(4, 16))
         tk.Label(
             footer,
-            text="Transcrição em Português Brasileiro · OpenAI Whisper · Funciona 100% offline",
+            text="Multiplos idiomas · OpenAI Whisper · Funciona 100% offline",
             font=("Helvetica", 8),
             bg=COLORS["bg"], fg=COLORS["muted"]
         ).pack(side="left")
@@ -394,12 +425,12 @@ class TranscriptorApp:
 
             self._update_status("🔊 Transcrevendo... (pode levar alguns minutos)")
 
-            result = self._whisper_model.transcribe(
-                path,
-                language="pt",
-                task="transcribe",
-                verbose=False,
-            )
+            idioma = IDIOMAS[self.idioma_key.get()]
+            kwargs = {"task": "transcribe", "verbose": False}
+            if idioma is not None:
+                kwargs["language"] = idioma
+
+            result = self._whisper_model.transcribe(path, **kwargs)
 
             texto = result["text"].strip()
             self.root.after(0, self._transcricao_concluida, texto)

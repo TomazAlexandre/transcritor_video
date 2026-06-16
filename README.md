@@ -1,39 +1,41 @@
 # 🎬 Transcritor de Vídeo para Texto
 
-Transcreve vídeos e áudios direto do seu PC para texto em Português, usando o modelo Whisper da OpenAI — sem precisar de internet, sem API key, sem custo.
+Transcribes videos and audio files directly from your PC to text, using OpenAI's Whisper model — no internet required, no API key, no cost.
+
+> 🇧🇷 Supports multiple languages — including Portuguese, English, Spanish, and more.
 
 ---
 
-## Como funciona
+## How it works
 
-Você abre o app, seleciona o arquivo, escolhe o modelo e clica em transcrever. O texto aparece na tela e você pode salvar num `.txt` quando quiser.
+Open the app, select the file, choose the model and language, and click transcribe. The text appears on screen and you can save it as a `.txt` whenever you want.
 
-Por baixo dos panos, o script usa o [Whisper](https://github.com/openai/whisper) para fazer a transcrição localmente na sua máquina. O primeiro uso baixa o modelo escolhido (~75 MB a ~1.5 GB dependendo do tamanho), depois disso funciona 100% offline.
-
----
-
-## Requisitos
-
-- Python 3.8 ou superior
-- ffmpeg instalado no sistema
-- ~2 GB de RAM (modelo base)
+Under the hood, it uses [OpenAI Whisper](https://github.com/openai/whisper) to run transcription locally on your machine. The first run downloads the chosen model (~75 MB to ~1.5 GB depending on the size), after that it works 100% offline.
 
 ---
 
-## Instalação
+## Requirements
 
-**1. Clone o repositório**
+- Python 3.8 or higher
+- ffmpeg installed on the system
+- ~2 GB RAM (base model)
+
+---
+
+## Installation
+
+**1. Clone the repository**
 ```bash
-git clone https://github.com/tomazAlexandre/transcritor-video.git
-cd transcritor-video
+git clone https://github.com/TomazAlexandre/transcritor_video.git
+cd transcritor_video
 ```
 
-**2. Instale o Whisper**
+**2. Install Whisper**
 ```bash
 pip install openai-whisper
 ```
 
-**3. Instale o ffmpeg**
+**3. Install ffmpeg**
 
 Windows:
 ```bash
@@ -50,65 +52,85 @@ Mac:
 brew install ffmpeg
 ```
 
-> Após instalar o ffmpeg no Windows, feche e abra o terminal novamente para o PATH atualizar.
+> After installing ffmpeg on Windows, close and reopen the terminal to update the PATH.
 
 ---
 
-## Uso
+## Usage
 
 ```bash
 python transcritor_video.py
 ```
 
-A interface abre, você seleciona o vídeo e escolhe o modelo na lista. Simples assim.
+The interface opens, you select the video/audio file, choose the model and language. That's it.
 
 ---
 
-## Modelos disponíveis
+## Available Models
 
-| Modelo | Velocidade | Precisão | RAM aprox. |
-|--------|-----------|----------|------------|
-| tiny   | ⚡⚡⚡⚡   | ★☆☆☆    | ~1 GB      |
-| base   | ⚡⚡⚡    | ★★☆☆    | ~1 GB      |
-| small  | ⚡⚡      | ★★★☆    | ~2 GB      |
-| medium | ⚡        | ★★★★    | ~5 GB      |
-| large  | 🐢        | ★★★★★   | ~10 GB     |
+| Model  | Speed     | Accuracy | RAM (approx.) |
+|--------|-----------|----------|---------------|
+| tiny   | ⚡⚡⚡⚡ | ★☆☆☆    | ~1 GB         |
+| base   | ⚡⚡⚡   | ★★☆☆    | ~1 GB         |
+| small  | ⚡⚡     | ★★★☆    | ~2 GB         |
+| medium | ⚡       | ★★★★    | ~5 GB         |
+| large  | 🐢        | ★★★★★   | ~10 GB        |
 
-Para a maioria dos casos, o **base** já resolve bem. Se precisar de mais precisão com sotaques ou áudio difícil, vale testar o **small** ou **medium**.
-
----
-
-## Formatos suportados
-
-Vídeo: `mp4`, `mkv`, `avi`, `mov`, `wmv`, `flv`, `webm`, `m4v`, `mpeg`
-
-Áudio: `mp3`, `wav`, `ogg`, `flac`, `aac`, `m4a`
+For most use cases, **base** works great. If you need more accuracy with accents or difficult audio, try **small** or **medium**.
 
 ---
 
-## Funcionalidades
+## Supported Languages
 
-- Interface gráfica nativa (sem dependência de frameworks externos)
-- Transcrição em Português Brasileiro
-- Salva o resultado em `.txt` com metadados (data, arquivo, modelo usado)
-- Funciona offline após o primeiro download do modelo
-- Compatível com Windows, Linux e Mac
+| Language   | Code |
+|------------|------|
+| Portuguese | pt   |
+| English    | en   |
+| Spanish    | es   |
+| French     | fr   |
+| German     | de   |
+| Italian    | it   |
+| Japanese   | ja   |
+| Chinese    | zh   |
+| Russian    | ru   |
+| Arabic     | ar   |
+| Auto-detect | —   |
 
----
-
-## Problemas comuns
-
-**`ffmpeg not found` no Windows**
-Instale pelo `winget install ffmpeg` e reinicie o terminal antes de rodar o script.
-
-**Transcrição muito lenta**
-Use um modelo menor (`tiny` ou `base`) ou rode numa máquina com GPU — o Whisper usa CUDA automaticamente se disponível.
-
-**Texto com erros em palavras técnicas ou nomes próprios**
-É uma limitação do modelo para esse tipo de vocabulário. Modelos maiores (`medium`, `large`) tendem a errar menos.
+> **Auto-detect** lets Whisper identify the language automatically — useful when you're unsure.
 
 ---
 
-## Licença
+## Supported Formats
+
+Video: `mp4`, `mkv`, `avi`, `mov`, `wmv`, `flv`, `webm`, `m4v`, `mpeg`
+
+Audio: `mp3`, `wav`, `ogg`, `flac`, `aac`, `m4a`
+
+---
+
+## Features
+
+- Native GUI (no external frameworks needed)
+- Multi-language transcription with auto-detect option
+- Saves result as `.txt` with metadata (date, file name, model used)
+- Works offline after the first model download
+- Compatible with Windows, Linux and Mac
+
+---
+
+## Common Issues
+
+**`ffmpeg not found` on Windows**
+Run `winget install ffmpeg` and restart the terminal before running the script.
+
+**Transcription is very slow**
+Use a smaller model (`tiny` or `base`), or run on a machine with a GPU — Whisper uses CUDA automatically if available.
+
+**Errors on technical words or proper names**
+This is a known limitation for specific vocabulary. Larger models (`medium`, `large`) tend to handle it better.
+
+---
+
+## License
 
 MIT
